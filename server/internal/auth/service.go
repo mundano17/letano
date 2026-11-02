@@ -112,7 +112,7 @@ func hashToken(tokenstring string) string {
 func (service *authService) LoginUserService(ctx context.Context, email string, password string) (accessTokenString string, refreshTokenString string, err error) {
 	res, err := service.query.GetUserByEmail(ctx, email)
 	if err != nil {
-		return "", "", ErrInvalidCredentials
+		return "", "", ErrUserDoesNotExist
 	}
 
 	match, err := argon2id.ComparePasswordAndHash(password, res.PasswordHash)

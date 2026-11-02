@@ -16,7 +16,7 @@ func createAccessToken(userID string) (string, error) {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"iat": time.Now().Unix(),
-			"exp": time.Now().Add(15 * time.Minute).Unix(),
+			"exp": time.Now().Add(5 * time.Minute).Unix(),
 			"iss": "tano_server",
 			"sub": userID,
 		})
@@ -28,7 +28,7 @@ func createRefreshToken(userID string) (string, error) {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"iat": time.Now().Unix(),
-			"exp": time.Now().Add(7 * 24 * time.Hour).Unix(),
+			"exp": time.Now().Add(2 * 24 * time.Hour).Unix(),
 			"iss": "tanoserver",
 			"sub": userID,
 		})

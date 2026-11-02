@@ -78,6 +78,11 @@ func (c *AuthController) LoginUserController(w http.ResponseWriter, r *http.Requ
 			http.Error(w, "Invalid Credentials", http.StatusUnauthorized)
 			return
 		}
+		if errors.Is(err, ErrUserDoesNotExist) {
+			http.Error(w, "User Doesn't Exist", http.StatusBadRequest)
+			return
+		}
+
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
