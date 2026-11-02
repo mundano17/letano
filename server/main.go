@@ -1,19 +1,19 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"tano/http/middleware"
 	"tano/http/routes"
 	"tano/internal/auth"
+	migrate "tano/internal/db"
 	db "tano/internal/db/generated"
 
 	_ "modernc.org/sqlite"
 )
 
 func main() {
-	conn, err := sql.Open("sqlite", "./tano_server.db")
+	conn, err := migrate.SetupDB("./tano_server.db")
 	if err != nil {
 		panic(err)
 	}
