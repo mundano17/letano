@@ -8,6 +8,34 @@ import (
 	"database/sql"
 )
 
+type Metadata struct {
+	MetadataID string
+	UserID     string
+	FileName   string
+	FileHash   string
+	UploadedAt string
+	MimeType   string
+}
+
+type MetadataField struct {
+	MetadataID string
+	FieldName  string
+	FieldValue string
+}
+
+type Upload struct {
+	UserID         string
+	UploadID       string
+	FileHash       string
+	FileName       string
+	FileSize       int64
+	UploadedChunks []byte
+	MimeType       string
+	UploadStatus   string
+	Fields         sql.NullString
+	CreatedAt      sql.NullString
+}
+
 type User struct {
 	UserID           string
 	UserName         sql.NullString
