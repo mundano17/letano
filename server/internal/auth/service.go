@@ -9,6 +9,7 @@ import (
 	"strings"
 	"unicode"
 
+	"tano/http/middleware"
 	db "tano/internal/db/generated"
 
 	"github.com/alexedwards/argon2id"
@@ -178,7 +179,7 @@ func (service *authService) DeleteUserService(ctx context.Context, userID string
 }
 
 func (service *authService) RefreshTokenService(ctx context.Context, refreshTokenString string) (string, string, error) {
-	userID, err := VerifyToken(refreshTokenString)
+	userID, err := middleware.VerifyToken(refreshTokenString)
 	if err != nil {
 		return "", "", ErrInvalidRefreshToken
 	}

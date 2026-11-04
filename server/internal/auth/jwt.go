@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"errors"
 	"os"
 	"time"
 
@@ -34,21 +33,4 @@ func createRefreshToken(userID string) (string, error) {
 		})
 	s, err := t.SignedString(jwtKey())
 	return s, err
-}
-
-func VerifyToken(tokenString string) (string, error) {
-	tok, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
-		if token.Method.Alg() != jwt.SigningMethodHS256.Alg() {
-			return nil, errors.New("unexpected signing method")
-		}
-		return jwtKey(), nil
-	})
-	if err != nil {
-		return "", err
-	}
-	sub, err := tok.Claims.GetSubject()
-	if err != nil {
-		return "", err
-	}
-	return sub, err
 }

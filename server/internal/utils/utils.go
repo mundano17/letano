@@ -1,24 +1,9 @@
 package utils
 
 import (
-	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 )
-
-var ErrUserIDNotFoundInContext error = errors.New("User ID not found in context")
-
-type userIDKey struct {
-}
-
-func GetUserIDFromContext(ctx context.Context) (string, error) {
-	userID, ok := ctx.Value(userIDKey{}).(string)
-	if !ok {
-		return "", ErrUserIDNotFoundInContext
-	}
-	return userID, nil
-}
 
 func GetJson[T any](w http.ResponseWriter, r *http.Request) *T {
 	obj := new(T)
@@ -28,4 +13,10 @@ func GetJson[T any](w http.ResponseWriter, r *http.Request) *T {
 		return nil
 	}
 	return obj
+}
+
+func WriteJSON(w http.ResponseWriter, status int, body any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(body)
 }

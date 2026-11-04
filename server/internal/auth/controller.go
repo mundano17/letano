@@ -3,6 +3,7 @@ package auth
 import (
 	"errors"
 	"net/http"
+	"tano/http/middleware"
 	db "tano/internal/db/generated"
 	"tano/internal/utils"
 )
@@ -105,7 +106,7 @@ func (c *AuthController) DeleteUserController(w http.ResponseWriter, r *http.Req
 	}
 
 	ctx := r.Context()
-	value, err := utils.GetUserIDFromContext(ctx)
+	value, err := middleware.GetUserIDFromContext(ctx)
 	if err != nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
