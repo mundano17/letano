@@ -7,10 +7,7 @@ import (
 	"net/http/httptest"
 	"path/filepath"
 	"strings"
-	"tano/http/routes"
-	"tano/internal/auth"
-	migrate "tano/internal/db"
-	db "tano/internal/db/generated"
+	setup "tano/internal/db"
 	"testing"
 
 	_ "modernc.org/sqlite"
@@ -18,14 +15,7 @@ import (
 
 func setupTestApp(conn *sql.DB) http.Handler {
 
-	dbconn := db.New(conn)
-	authController := auth.NewAuthController(dbconn)
-	authMux := routes.NewAuthMux(authController)
-
-	mux := http.NewServeMux()
-	mux.Handle("/user/", http.StripPrefix("/user", authMux))
-
-	return mux
+	return setup.SetupApp(conn)
 }
 
 func registerUser(body string) (*http.Request, *httptest.ResponseRecorder) {
@@ -73,7 +63,7 @@ func TestRegisterUserController(t *testing.T) {
 
 	for _, tt := range tests {
 		path := filepath.Join(t.TempDir(), t.Name())
-		conn, err := migrate.SetupDB(path)
+		conn, err := setup.SetupDB(path)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -148,7 +138,7 @@ func TestLoginUserController(t *testing.T) {
 
 	for _, tt := range tests {
 		path := filepath.Join(t.TempDir(), t.Name())
-		conn, err := migrate.SetupDB(path)
+		conn, err := setup.SetupDB(path)
 		if err != nil {
 			t.Fatal(err)
 		}

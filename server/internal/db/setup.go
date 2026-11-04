@@ -1,8 +1,13 @@
-package migrate
+package setup
 
 import (
 	"database/sql"
 	"embed"
+	"net/http"
+	"tano/http/routes"
+	"tano/internal/auth"
+	db "tano/internal/db/generated"
+	"tano/internal/upload"
 
 	_ "modernc.org/sqlite"
 
@@ -63,4 +68,18 @@ func SetupDB(path string) (*sql.DB, error) {
 	}
 
 	return appdb, err
+}
+
+func SetupApp(conn *sql.DB) *http.ServeMux {
+	dbconn := db.New(conn)
+	authController := auth.NewAuthController(dbconn)
+	uploadController := upload.NewUploadController(dbconn, conn)
+
+	authMux := routes.NewAuthMux(authController)
+	uploadMux := routes.NewUploadMux(uploadController)
+
+	mux := http.NewServeMux()
+	mux.Handle("/user/", http.StripPrefix("/user", authMux))
+	mux.Handle("/upload/", http.StripPrefix("/upload", uploadMux))
+	return mux
 }
